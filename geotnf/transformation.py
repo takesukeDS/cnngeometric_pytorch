@@ -137,7 +137,7 @@ class GeometricTnf(object):
             return sampling_grid
         
         # sample transformed image
-        warped_image_batch = F.grid_sample(image_batch, sampling_grid)
+        warped_image_batch = F.grid_sample(image_batch, sampling_grid, padding_mode="border")
         
         if return_sampling_grid and return_warped_image:
             return (warped_image_batch,sampling_grid)
