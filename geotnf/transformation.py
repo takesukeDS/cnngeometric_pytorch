@@ -79,12 +79,14 @@ class GeometricTnf(object):
     ( can be used with no transformation to perform bilinear resizing )        
     
     """
-    def __init__(self, geometric_model='affine', tps_grid_size=3, tps_reg_factor=0, out_h=240, out_w=240, offset_factor=None, use_cuda=True):
+    def __init__(self, geometric_model='affine', tps_grid_size=3, tps_reg_factor=0,
+                 out_h=240, out_w=240, offset_factor=None, use_cuda=True, padding_mode="zeros"):
         self.out_h = out_h
         self.out_w = out_w
         self.geometric_model = geometric_model
         self.use_cuda = use_cuda
         self.offset_factor = offset_factor
+        self.padding_mode = padding_mode
         
         if geometric_model=='affine' and offset_factor is None:
             self.gridGen = AffineGridGen(out_h=out_h, out_w=out_w, use_cuda=use_cuda)
@@ -137,7 +139,8 @@ class GeometricTnf(object):
             return sampling_grid
         
         # sample transformed image
-        warped_image_batch = F.grid_sample(image_batch, sampling_grid, padding_mode="zeros")
+        warped_image_batch = F.grid_sample(image_batch, sampling_grid,
+                                           padding_mode=self.padding_mode)
         
         if return_sampling_grid and return_warped_image:
             return (warped_image_batch,sampling_grid)
